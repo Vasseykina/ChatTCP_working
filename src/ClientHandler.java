@@ -72,7 +72,7 @@ public class ClientHandler implements Runnable {
             }catch (IOException e){
                 closeEverything(socket, bufferedReader, bufferedWriter);
             }
-        }
+        }// тут если убрать if , оставляя условие только else, то правильно отправляет всем, я пыталась расписать if,что оправлялось только одному ... но какая-то хуйня
         else {
             for (ClientHandler clientHandler : clientHandlers) {
                 try {
