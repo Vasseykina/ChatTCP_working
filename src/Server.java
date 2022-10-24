@@ -4,7 +4,7 @@ import java.net.Socket;
 
 public class Server {
 
-    private ServerSocket serverSocket;
+    private final ServerSocket serverSocket;
     private Server(ServerSocket serverSocket){
         this.serverSocket =serverSocket;
     }
@@ -22,6 +22,7 @@ public class Server {
 
             }
         }catch(IOException e){
+            e.printStackTrace();
         }
     }
     public void closeServer(){
