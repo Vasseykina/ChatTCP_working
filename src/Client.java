@@ -1,11 +1,9 @@
 import java.io.*;
+import java.net.ConnectException;
 import java.net.Socket;
-import java.net.SocketOption;
 import java.util.Scanner;
 
 public class Client {
-
-
 
     private Socket socket;
     private BufferedReader bufferedReader;
@@ -18,8 +16,9 @@ public class Client {
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.username= username;
-        }catch ( IOException e){
+        } catch ( IOException e){
             closeEverything(socket, bufferedReader, bufferedWriter);
+            e.printStackTrace();
         }
     }
 
@@ -36,10 +35,10 @@ public class Client {
                 bufferedWriter.write(username +":" + messageToSend);
                 bufferedWriter.newLine();
                 bufferedWriter.flush();
-
             }
         }catch(IOException e){
             closeEverything(socket, bufferedReader, bufferedWriter);
+            e.printStackTrace();
         }
     }
 
@@ -51,9 +50,17 @@ public class Client {
                 while(socket.isConnected()){
                     try{
                         msgFromGroupChat = bufferedReader.readLine();
-                        System.out.println(msgFromGroupChat);
+                        if(msgFromGroupChat != null)
+                            System.out.println(msgFromGroupChat);
+                        else {
+                            System.out.println("Проблемы с получением данных от сервера");
+                            Thread.sleep(5000);
+                        }
                     }catch(IOException e){
                         closeEverything(socket, bufferedReader, bufferedWriter);
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
                     }
                 }
             }
@@ -61,7 +68,6 @@ public class Client {
     }
 
     public void closeEverything(Socket socket,BufferedReader bufferedReader, BufferedWriter bufferedWriter){
-
         try{
             if(bufferedReader != null){
                 bufferedReader.close();
@@ -81,10 +87,13 @@ public class Client {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter your name:");
         String username = scanner.nextLine();
-        Socket socket = new Socket("localhost",1234);
-        Client client = new Client(socket,username);
-        client.listenForMessage();
-        client.sendMessage();
+        try {
+            Socket socket = new Socket("localhost", 1234);
+            Client client = new Client(socket, username);
+            client.listenForMessage();
+            client.sendMessage();
+        } catch (ConnectException e){
+            System.err.println("Проблемы с подключением к серверу. Порпобуйте позже");
+        }
     }
-
 }
