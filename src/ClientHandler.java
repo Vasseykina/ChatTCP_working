@@ -1,6 +1,9 @@
 import java.io.*;
 import java.net.Socket;
+import java.security.spec.RSAOtherPrimeInfo;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class ClientHandler implements Runnable {
 
@@ -57,22 +60,23 @@ public class ClientHandler implements Runnable {
 //        }
 //    }
 
-
     public void broadcastMessage(String messageToSend) {
-        if (messageToSend.startsWith("@sendUser")) {
-            String closeChatUser = messageToSend.substring(10);
+        if (messageToSend.contains("@sendUser")) {
+            String closeChatUser = messageToSend.split("@sendUser")[1].split("\\s")[1];
             try {
+                String message = messageToSend.substring(clientUsername.length() + closeChatUser.length() + 12);
+                System.out.println(message);
                 for (ClientHandler clientHandler : clientHandlers) {
                     if (clientHandler.clientUsername.equals(closeChatUser)) {
-                        clientHandler.bufferedWriter.write(messageToSend);
+                        clientHandler.bufferedWriter.write(clientUsername + ":" + message);
                         clientHandler.bufferedWriter.newLine();
                         clientHandler.bufferedWriter.flush();
                     }
                 }
-            }catch (IOException e){
+            } catch (IOException e) {
                 closeEverything(socket, bufferedReader, bufferedWriter);
             }
-        }// тут если убрать if , оставляя условие только else, то правильно отправляет всем, я пыталась расписать if,что оправлялось только одному ... но какая-то хуйня
+        }
         else {
             for (ClientHandler clientHandler : clientHandlers) {
                 try {
@@ -87,13 +91,10 @@ public class ClientHandler implements Runnable {
             }
         }
     }
-
-
     public void removeClientHandlers() {
         clientHandlers.remove(this);
         broadcastMessage("SERVER:" + clientUsername + " has left the chat");
     }
-
     public void closeEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
         removeClientHandlers();
         try {
