@@ -42,23 +42,9 @@ public class ClientHandler implements Runnable {
             }
         }
     }
-//
-//    public void sendCloseMsg(String messageToSend) {
-//        if (messageToSend.startsWith("@sendUser")) {
-//            String closeChatUser = messageToSend.substring(10);
-//            try {
-//                for (ClientHandler clientHandler : clientHandlers) {
-//                    if (clientHandler.clientUsername.equals(closeChatUser)) {
-//                        clientHandler.bufferedWriter.write(messageToSend);
-//                        clientHandler.bufferedWriter.newLine();
-//                        clientHandler.bufferedWriter.flush();
-//                    }
-//                }
-//            }catch (IOException e){
-//                closeEverything(socket, bufferedReader, bufferedWriter);
-//            }
-//        }
-//    }
+
+
+
 
     public void broadcastMessage(String messageToSend) {
         if (messageToSend.contains("@sendUser")) {
@@ -71,13 +57,19 @@ public class ClientHandler implements Runnable {
                         clientHandler.bufferedWriter.write(clientUsername + ":" + message);
                         clientHandler.bufferedWriter.newLine();
                         clientHandler.bufferedWriter.flush();
+                    } else {
+                        for (ClientHandler clientHandlers : clientHandlers) {
+                            if (clientHandlers.clientUsername.equals(clientUsername)) {
+                                clientHandler.bufferedWriter.newLine();
+                                clientHandler.bufferedWriter.flush();
+                            }
+                        }
                     }
                 }
             } catch (IOException e) {
                 closeEverything(socket, bufferedReader, bufferedWriter);
             }
-        }
-        else {
+        } else {
             for (ClientHandler clientHandler : clientHandlers) {
                 try {
                     if (!clientHandler.clientUsername.equals(clientUsername)) {
@@ -91,10 +83,12 @@ public class ClientHandler implements Runnable {
             }
         }
     }
+
     public void removeClientHandlers() {
         clientHandlers.remove(this);
         broadcastMessage("SERVER:" + clientUsername + " has left the chat");
     }
+
     public void closeEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
         removeClientHandlers();
         try {

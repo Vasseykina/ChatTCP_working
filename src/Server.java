@@ -36,7 +36,7 @@ public class Server {
     }
 
     public static void main(String[] args) throws IOException{
-        ServerSocket serverSocket = new ServerSocket(50009);
+        ServerSocket serverSocket = new ServerSocket(50005);
         Server server = new Server(serverSocket);
         server.startServer();
     }

@@ -79,7 +79,7 @@ public class Client {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter your name:");
         String username = scanner.nextLine();
-        Socket socket = new Socket("localhost", 50009);
+        Socket socket = new Socket("localhost", 50005);
         Client client = new Client(socket, username);
         client.listenForMessage();
         client.sendMessage();
