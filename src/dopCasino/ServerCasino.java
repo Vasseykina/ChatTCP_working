@@ -1,12 +1,16 @@
+package dopCasino;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
+import java.util.Date;
 
-public class Server {
+import static dopCasino.ClientHandler.*;
+
+public class ServerCasino {
 
     private ServerSocket serverSocket;
-    private Server(ServerSocket serverSocket){
+    private ServerCasino (ServerSocket serverSocket){
         this.serverSocket =serverSocket;
     }
 
@@ -16,15 +20,14 @@ public class Server {
                 Socket socket = serverSocket.accept();
                 System.out.println("A new client has connected! ");
                 ClientHandler clientHandler = new ClientHandler(socket);
-
-
                 Thread thread = new Thread(clientHandler);
                 thread.start();
-
             }
         }catch(IOException e){
         }
     }
+
+
     public void closeServer(){
         try{
             if(serverSocket!=null){
@@ -36,8 +39,11 @@ public class Server {
     }
 
     public static void main(String[] args) throws IOException{
-        ServerSocket serverSocket = new ServerSocket(50006);
-        Server server = new Server(serverSocket);
+        ServerSocket serverSocket = new ServerSocket(7877);
+        ServerCasino server = new ServerCasino(serverSocket);
         server.startServer();
+        System.out.println(clientsBets);
+
+
     }
 }
