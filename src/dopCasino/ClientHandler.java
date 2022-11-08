@@ -3,13 +3,14 @@ package dopCasino;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ClientHandler implements Runnable {
 
     public static ArrayList<ClientHandler> clientHandlers = new ArrayList<>();
-    public static ArrayList<String> clientsBets = new ArrayList<>();
+    public static HashMap<String, Integer> clientsBets = new HashMap<>();
     public static String winBets ;
 
     private Socket socket;
@@ -37,11 +38,11 @@ public class ClientHandler implements Runnable {
         return winBets;
     }
 
-    public void winner(String clientsBets){
-        if(clientsBets.contains(winBets())){
-
-        }
-    }
+//    public void winner(String clientsBets){
+//        if(clientsBets.contains(winBets())){
+//
+//        }
+//    }
 
     @Override
     public void run() {
@@ -68,9 +69,7 @@ public class ClientHandler implements Runnable {
                     if (!matcher2.find()) {
                         String needless = messageToSend.substring(clientUsername.length() + bet.length() + 12);
                         if (needless.isEmpty()) {
-                            String messageBets = clientUsername + bet;
-                            clientsBets.add(messageBets);
-                            System.out.println(messageBets + "\n");
+                            clientsBets.put(clientUsername ,Integer.parseInt(bet));
                             for (ClientHandler clientHandler : clientHandlers) {
                                 try {
                                     if (!clientHandler.clientUsername.equals(clientUsername)) {

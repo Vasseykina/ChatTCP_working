@@ -59,7 +59,6 @@ public class Player {
         }
 
         public void closeEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
-
             try {
                 if (bufferedReader != null) {
                     bufferedReader.close();
@@ -70,7 +69,6 @@ public class Player {
                 if (socket != null) {
                     socket.close();
                 }
-
             } catch (IOException e) {
                 e.printStackTrace();
             }

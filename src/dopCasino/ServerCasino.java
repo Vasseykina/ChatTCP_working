@@ -18,7 +18,7 @@ public class ServerCasino {
         try{
             while(!serverSocket.isClosed()){
                 Socket socket = serverSocket.accept();
-                System.out.println("A new client has connected! ");
+                System.out.println("A new client has connected!");
                 ClientHandler clientHandler = new ClientHandler(socket);
                 Thread thread = new Thread(clientHandler);
                 thread.start();
@@ -26,7 +26,6 @@ public class ServerCasino {
         }catch(IOException e){
         }
     }
-
 
     public void closeServer(){
         try{
@@ -42,8 +41,6 @@ public class ServerCasino {
         ServerSocket serverSocket = new ServerSocket(7877);
         ServerCasino server = new ServerCasino(serverSocket);
         server.startServer();
-        System.out.println(clientsBets);
-
-
+        CasinoThread casinoThread = new CasinoThread();
     }
 }
